@@ -14,7 +14,7 @@ info = {
 }
 
 tokens = 500
-
+#
 driver = webdriver.Chrome('./chromedriver')
 wait = WebDriverWait(driver, timeout=10)
 driver.get("https://id.blooket.com/login")
@@ -91,28 +91,47 @@ def start():
 def feed():
     # 57 secs
     # //*[@id="customer"]/div[3] -> customer
-    # //*[@id="plate1"]/div[1] -> plate
-    pass
+    # "plate1" -> food id
+    # //*[@id="customer"]/div[3]
+    time.sleep(0.5)
+    for i in range(3):
+        food = smart_wait(By.ID, 'plate1')
+        food.click()
 
+        customers = driver.find_elements(By.XPATH, '//*[@id="customer"]/div[3]') #//*[@id="customer"]/div[3]
+        for customer in customers:
+            customer.click()
+        time.sleep(0.25)
 
 def cafe():
     questions = 400
     start()
+    beginning = int(time.time())
 
     while questions > 0:
-        restock = smart_wait(By.ID, 'restock')
-        restock.click()
+        if (int(time.time()) - beginning)%25 == 0 and int(time.time()) != beginning:
+            feed()
+        try:
+            restock = smart_wait(By.ID, 'restock')
+            restock.click()
+    
+            time.sleep(0.5)
+            question = smart_wait(By.ID, f'answer{random.randint(0,3)}')
+            question.click()
+            print("clicked question", questions)
 
-        time.sleep(0.5)
+            time.sleep(0.5)
 
-        question = smart_wait(By.ID, f'answer{random.randint(0,3)}')
-        question.click()
-        print("clicked question")
+            green = smart_wait(By.XPATH, '//*[@id="feedbackButton"]')
+            green.click()
+            questions -= 1
+        except:
+            upgrade = smart_wait(By.XPATH, '//*[@id="body"]/div[4]/div[1]/div[5]')
+            upgrade.click()
 
-        time.sleep(0.5)
+            time.sleep(0.5)
 
-        green = smart_wait(By.XPATH, '//*[@id="feedbackButton"]')
-        green.click()
-        questions -= 1
+            next = smart_wait(By.ID, 'shopButton')
+            next.click()
 login()
 cafe()
