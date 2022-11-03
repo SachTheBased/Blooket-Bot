@@ -100,7 +100,10 @@ def feed():
 
         customers = driver.find_elements(By.XPATH, '//*[@id="customer"]/div[3]') #//*[@id="customer"]/div[3]
         for customer in customers:
-            customer.click()
+            try:
+                customer.click()
+            except:
+                pass
         time.sleep(0.25)
 
 def cafe():
@@ -109,12 +112,12 @@ def cafe():
     beginning = int(time.time())
 
     while questions > 0:
-        if (int(time.time()) - beginning)%25 == 0 and int(time.time()) != beginning:
+        if (int(time.time()) - beginning)%5 == 0 and int(time.time()) != beginning:
             feed()
         try:
             restock = smart_wait(By.ID, 'restock')
             restock.click()
-    
+
             time.sleep(0.5)
             question = smart_wait(By.ID, f'answer{random.randint(0,3)}')
             question.click()
@@ -126,7 +129,7 @@ def cafe():
             green.click()
             questions -= 1
         except:
-            upgrade = smart_wait(By.XPATH, '//*[@id="body"]/div[4]/div[1]/div[5]')
+            upgrade = smart_wait(By.CLASS_NAME, 'styles__reportShopButton___2AvJR-camelCase')
             upgrade.click()
 
             time.sleep(0.5)
