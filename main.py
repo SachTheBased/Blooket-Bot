@@ -13,8 +13,9 @@ info = {
     "password": ""
 }
 
+global tokens
 tokens = 500
-#
+
 driver = webdriver.Chrome('./chromedriver')
 wait = WebDriverWait(driver, timeout=10)
 driver.get("https://id.blooket.com/login")
@@ -118,12 +119,12 @@ def cafe():
             restock = smart_wait(By.ID, 'restock')
             restock.click()
 
-            time.sleep(0.5)
+            time.sleep(0.4)
             question = smart_wait(By.ID, f'answer{random.randint(0,3)}')
             question.click()
             print("clicked question", questions)
 
-            time.sleep(0.5)
+            time.sleep(0.4)
 
             green = smart_wait(By.XPATH, '//*[@id="feedbackButton"]')
             green.click()
@@ -136,5 +137,37 @@ def cafe():
 
             next = smart_wait(By.ID, 'shopButton')
             next.click()
+        # //*[@id="app"]/div/div/div[3]/div/div[2]/div[1]
+        # //*[@id="app"]/div/div/div[3]/div/div[2]/div[2]
+        # //*[@id="app"]/div/div/div[3]/div/div[2]/div[3]
+    try:
+        upgrade = smart_wait(By.CLASS_NAME, 'styles__reportShopButton___2AvJR-camelCase')
+        upgrade.click()
+
+        time.sleep(0.5)
+
+        next = smart_wait(By.ID, 'shopButton')
+        next.click()
+    except:
+        pass
+
+    while True:
+        try:
+            mult = smart_wait(By.XPATH, f'//*[@id="app"]/div/div/div[3]/div/div[2]/div[{random.randint(1,3)}]')
+            mult.click()
+            break
+        except:
+            pass
+
+    time.sleep(10)
+
+    coins = smart_wait(By.XPATH, '//*[@id="app"]/div/div/div[3]/div/div[2]/div[1]/div[1]/div')
+    earned = int(str(coins.text)[2:])
+
+    thanks = smart_wait(By.XPATH, '//*[@id="app"]/div/div/div[3]/div/div[2]/div[2]')
+    thanks.click()
+
+    return earned
+
 login()
 cafe()
